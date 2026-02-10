@@ -117,7 +117,7 @@ export default function VehicleDetails() {
                         </div>
                     )}
 
-                    {(user?.role === "user" || user?.role === "buyer") && (
+                    {user && user.id !== vehicle.seller_userid && (
                         <button
                             onClick={handleBuy}
                             className="btn btn-primary"

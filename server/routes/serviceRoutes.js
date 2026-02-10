@@ -69,8 +69,8 @@ router.get("/bookings/:userId", async (req, res) => {
             SELECT s.*, st.servicename, st.baseprice, u.username as customer_name, v.model, v.vehicleregistration, p.paymentstatus
             FROM service s
             JOIN servicetypes st ON s.servicetypeid = st.servicetypeid
-            JOIN vehicles v ON s.vehicleid = v.vehicleid
-            JOIN user u ON v.userid = u.userid
+            JOIN vehicle v ON s.vehicleid = v.vehicleid
+            JOIN user u ON v.seller_userid = u.userid
             JOIN payment p ON s.paymentid = p.paymentid
             JOIN servicecenters sc ON s.centerid = sc.centerid
             WHERE sc.userid = ?
@@ -88,7 +88,7 @@ router.get("/bookings/:userId", async (req, res) => {
             JOIN servicetypes st ON s.servicetypeid = st.servicetypeid
             JOIN servicecenters sc ON s.centerid = sc.centerid
             JOIN payment p ON s.paymentid = p.paymentid
-            WHERE s.vehicleid IN (SELECT vehicleid FROM orders WHERE buyerid = ?)
+            WHERE s.vehicleid IN (SELECT vehicleid FROM orders WHERE buyer_userid = ?)
             ORDER BY s.servicedate DESC
         `;
     }

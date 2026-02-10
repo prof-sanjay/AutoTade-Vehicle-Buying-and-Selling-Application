@@ -45,7 +45,7 @@ export default function Navbar() {
 
                             {user ? (
                                 <>
-                                    <Link to="/seller-dashboard">Dashboard</Link>
+                                    {/* <Link to="/seller-dashboard">Dashboard</Link> */}
                                     <Link to="/orders">My Orders</Link>
                                     <Link to="/add-vehicle" className="btn btn-primary">Sell Car</Link>
                                     <Link to="/profile">Hello, {user.username}</Link>

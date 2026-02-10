@@ -67,7 +67,7 @@ export default function Parts() {
                                 <p style={{ color: "var(--primary)", fontWeight: "bold", fontSize: "1.2rem", marginBottom: "1rem" }}>
                                     ₹ {Number(part.partprice).toLocaleString()}
                                 </p>
-                                {user && user.role === 'buyer' && (
+                                {user && user.role === 'user' && ( // Parts are bought by regular users
                                     <button
                                         onClick={() => handleBuyPart(part)}
                                         className="btn btn-primary"

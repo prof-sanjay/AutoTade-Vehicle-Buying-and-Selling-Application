@@ -31,7 +31,7 @@ export default function Verification() {
         try {
             const payload = {
                 itemId: item.vehicleid,        // 🔥 THIS is itemId
-                buyerId: user.details.userid,  // 🔥 buyer.userid
+                buyerId: user.id,  // 🔥 buyer.userid
                 sellerId: item.seller_userid,       // 🔥 vehicles.sellerid
                 amount: item.price
             };
@@ -85,12 +85,14 @@ export default function Verification() {
                         Back
                     </button>
 
-                    <button
-                        className="btn btn-primary"
-                        onClick={handleNotifySeller}
-                    >
-                        Notify Seller
-                    </button>
+                    {user.id !== item.seller_userid && (
+                        <button
+                            className="btn btn-primary"
+                            onClick={handleNotifySeller}
+                        >
+                            Notify Seller
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

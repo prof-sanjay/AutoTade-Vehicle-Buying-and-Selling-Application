@@ -11,19 +11,19 @@ async function checkDB() {
         output += "Tables in autotrade_db:\n";
         output += JSON.stringify(tables, null, 2) + "\n\n";
 
-        // Check if vehicles table exists
-        const [vehicleCheck] = await db.query("SHOW TABLES LIKE 'vehicles'");
+        // Check if vehicle table exists
+        const [vehicleCheck] = await db.query("SHOW TABLES LIKE 'vehicle'");
         if (vehicleCheck.length > 0) {
-            output += "Vehicles table structure:\n";
-            const [structure] = await db.query("DESCRIBE vehicles");
+            output += "Vehicle table structure:\n";
+            const [structure] = await db.query("DESCRIBE vehicle");
             output += JSON.stringify(structure, null, 2) + "\n\n";
 
             // Check sample data
-            const [sampleVehicle] = await db.query("SELECT * FROM vehicles LIMIT 1");
+            const [sampleVehicle] = await db.query("SELECT * FROM vehicle LIMIT 1");
             output += "Sample vehicle data:\n";
             output += JSON.stringify(sampleVehicle, null, 2) + "\n\n";
         } else {
-            output += "Vehicles table does not exist!\n\n";
+            output += "Vehicle table does not exist!\n\n";
         }
 
         // Check user table
