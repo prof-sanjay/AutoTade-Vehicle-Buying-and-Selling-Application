@@ -1,0 +1,291 @@
+Checking database tables...
+
+Tables in autotrade_db:
+[
+  {
+    "Tables_in_autotrade_db": "fitnesscertificate"
+  },
+  {
+    "Tables_in_autotrade_db": "location"
+  },
+  {
+    "Tables_in_autotrade_db": "orders"
+  },
+  {
+    "Tables_in_autotrade_db": "part_orders"
+  },
+  {
+    "Tables_in_autotrade_db": "parts"
+  },
+  {
+    "Tables_in_autotrade_db": "payment"
+  },
+  {
+    "Tables_in_autotrade_db": "service"
+  },
+  {
+    "Tables_in_autotrade_db": "servicecenters"
+  },
+  {
+    "Tables_in_autotrade_db": "servicetypes"
+  },
+  {
+    "Tables_in_autotrade_db": "user"
+  },
+  {
+    "Tables_in_autotrade_db": "vehicleimage"
+  },
+  {
+    "Tables_in_autotrade_db": "vehicles"
+  }
+]
+
+Vehicles table structure:
+[
+  {
+    "Field": "vehicleid",
+    "Type": "int",
+    "Null": "NO",
+    "Key": "PRI",
+    "Default": null,
+    "Extra": "auto_increment"
+  },
+  {
+    "Field": "userid",
+    "Type": "int",
+    "Null": "NO",
+    "Key": "MUL",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "model",
+    "Type": "varchar(100)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "vehicleregistration",
+    "Type": "varchar(50)",
+    "Null": "YES",
+    "Key": "UNI",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "dateofmanufacture",
+    "Type": "date",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "kmdriven",
+    "Type": "int",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "engine",
+    "Type": "varchar(50)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "fueltype",
+    "Type": "varchar(20)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "transmission",
+    "Type": "varchar(20)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "color",
+    "Type": "varchar(30)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "mileage",
+    "Type": "varchar(20)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "locationid",
+    "Type": "int",
+    "Null": "YES",
+    "Key": "MUL",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "price",
+    "Type": "decimal(10,2)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "status",
+    "Type": "varchar(20)",
+    "Null": "YES",
+    "Key": "",
+    "Default": "Available",
+    "Extra": ""
+  },
+  {
+    "Field": "featured",
+    "Type": "tinyint(1)",
+    "Null": "YES",
+    "Key": "",
+    "Default": "0",
+    "Extra": ""
+  },
+  {
+    "Field": "previewImage",
+    "Type": "varchar(255)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  }
+]
+
+Sample vehicle data:
+[
+  {
+    "vehicleid": 1,
+    "userid": 2,
+    "model": "Hyundai i20",
+    "vehicleregistration": "KA01AA1111",
+    "dateofmanufacture": "2019-05-09T18:30:00.000Z",
+    "kmdriven": 35000,
+    "engine": "1.2 Litre",
+    "fueltype": "Petrol",
+    "transmission": "Manual",
+    "color": "White",
+    "mileage": "18 kmpl",
+    "locationid": 1,
+    "price": "650000.00",
+    "status": "Available",
+    "featured": 0,
+    "previewImage": null
+  }
+]
+
+User table structure:
+[
+  {
+    "Field": "userid",
+    "Type": "int",
+    "Null": "NO",
+    "Key": "PRI",
+    "Default": null,
+    "Extra": "auto_increment"
+  },
+  {
+    "Field": "username",
+    "Type": "varchar(50)",
+    "Null": "NO",
+    "Key": "UNI",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "password",
+    "Type": "varchar(100)",
+    "Null": "NO",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "role",
+    "Type": "enum('user','admin','service_center')",
+    "Null": "NO",
+    "Key": "",
+    "Default": "user",
+    "Extra": ""
+  },
+  {
+    "Field": "name",
+    "Type": "varchar(100)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "email",
+    "Type": "varchar(100)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "phonenumber",
+    "Type": "varchar(15)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "address",
+    "Type": "varchar(255)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "locationid",
+    "Type": "int",
+    "Null": "YES",
+    "Key": "MUL",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "created_at",
+    "Type": "timestamp",
+    "Null": "YES",
+    "Key": "",
+    "Default": "CURRENT_TIMESTAMP",
+    "Extra": "DEFAULT_GENERATED"
+  }
+]
+
+Sample user data:
+[
+  {
+    "userid": 1,
+    "username": "arjun",
+    "role": "user",
+    "name": "Arjun Krishnan",
+    "email": "arjun@example.com",
+    "phonenumber": "9876543210"
+  }
+]
