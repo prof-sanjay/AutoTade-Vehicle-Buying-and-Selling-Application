@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Car, Lock, User, ArrowRight, ShieldCheck } from "lucide-react";
-import "./Login.css"; // Import the custom CSS file
+import "./Login.css"; 
 
 export default function Login() {
     const [formData, setFormData] = useState({ username: "", password: "" });
@@ -10,9 +10,12 @@ export default function Login() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const user = localStorage.getItem("user");
-        if (user) {
-            navigate("/profile");
+        const stored = localStorage.getItem("user");
+        if (stored) {
+            const user = JSON.parse(stored);
+            if (user.role === "admin") navigate("/admin");
+            else if (user.role === "service_center" || user.role === "servicecenter") navigate("/service-dashboard");
+            else navigate("/home");
         } else {
             setCheckingAuth(false);
         }
@@ -20,7 +23,7 @@ export default function Login() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        setError(""); // Clear previous errors
+        setError(""); 
 
         fetch("http://localhost:5000/api/auth/login", {
             method: "POST",
@@ -31,8 +34,11 @@ export default function Login() {
             .then(data => {
                 if (data.user) {
                     localStorage.setItem("user", JSON.stringify(data.user));
-                    navigate("/profile");
-                    window.location.reload(); // Quick refresh to update navbar
+                    const role = data.user.role;
+                    if (role === "admin") navigate("/admin");
+                    else if (role === "service_center" || role === "servicecenter") navigate("/service-dashboard");
+                    else navigate("/home");
+                    window.location.reload();
                 } else {
                     setError(data.error || "Invalid credentials");
                 }

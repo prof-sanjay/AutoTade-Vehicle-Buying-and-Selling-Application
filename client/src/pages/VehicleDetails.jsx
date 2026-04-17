@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../index.css";
 
+const API = "http://localhost:5000";
+function imgUrl(path) {
+    if (!path) return null;
+    return path.startsWith("http") ? path : API + path;
+}
+
 export default function VehicleDetails() {
     const { id } = useParams();
     const [vehicle, setVehicle] = useState(null);
@@ -20,7 +26,9 @@ export default function VehicleDetails() {
             return;
         }
         // Navigate to verification page
+        
         navigate(`/verify/vehicle/${id}`);
+
     }
 
     if (!vehicle) return <div className="container">Loading...</div>;
@@ -29,11 +37,13 @@ export default function VehicleDetails() {
         <div className="container" style={{ margin: "2rem auto" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "2rem" }}>
 
-                {/* Left: Images */}
+                
                 <div>
                     <img
-                        src={vehicle.images?.[0]?.ImagePath || "https://placehold.co/800x600?text=Vehicle+Image"}
-                        style={{ width: "100%", borderRadius: "var(--radius)" }}
+                        src={imgUrl(vehicle.images?.[0]?.ImagePath) || "/default-car.png"}
+                        alt={vehicle.model}
+                        style={{ width: "100%", borderRadius: "var(--radius)", maxHeight: "420px", objectFit: "cover" }}
+                        onError={e => { e.target.src = "/default-car.png"; }}
                     />
                     <div
                         style={{
@@ -46,14 +56,16 @@ export default function VehicleDetails() {
                         {vehicle.images?.slice(1).map(img => (
                             <img
                                 key={img.ImageID}
-                                src={img.ImagePath}
-                                style={{ width: "100%", borderRadius: "var(--radius)" }}
+                                src={imgUrl(img.ImagePath)}
+                                alt={vehicle.model}
+                                style={{ width: "100%", borderRadius: "var(--radius)", height: "80px", objectFit: "cover" }}
+                                onError={e => { e.target.src = "/default-car.png"; }}
                             />
                         ))}
                     </div>
                 </div>
 
-                {/* Right: Info */}
+                
                 <div>
                     <h1 style={{ fontSize: "2.5rem" }}>{vehicle.model}</h1>
                     <h2 style={{ color: "var(--primary)", fontSize: "2rem", margin: "1rem 0" }}>
@@ -72,6 +84,7 @@ export default function VehicleDetails() {
                         >
                             <div><strong>Year:</strong> {vehicle.dateofmanufacture}</div>
                             <div><strong>KM Driven:</strong> {vehicle.kmdriven}</div>
+
                             <div><strong>Fuel:</strong> {vehicle.fueltype}</div>
                             <div><strong>Transmission:</strong> {vehicle.transmission}</div>
                             <div><strong>Engine:</strong> {vehicle.engine}</div>
@@ -80,6 +93,8 @@ export default function VehicleDetails() {
                     </div>
 
                     <div className="card" style={{ padding: "1.5rem", marginBottom: "2rem" }}>
+
+                    {/* Fitness Certificate */}
                         <h3>Seller Details</h3>
                         <div style={{ marginTop: "1rem" }}>
                             <p><strong>Name:</strong> {vehicle.sellername || "Unknown"}</p>
@@ -88,7 +103,7 @@ export default function VehicleDetails() {
                         </div>
                     </div>
 
-                    {/* Fitness Certificate */}
+                    
                     {vehicle.fc_id && (
                         <div
                             className="card"
@@ -107,6 +122,7 @@ export default function VehicleDetails() {
                                             color: vehicle.fc_status === "Valid" ? "green" : "red",
                                             fontWeight: "bold"
                                         }}
+
                                     >
                                         {vehicle.fc_status}
                                     </span>
@@ -117,10 +133,12 @@ export default function VehicleDetails() {
                         </div>
                     )}
 
+
                     {user && user.id !== vehicle.seller_userid && (
                         <button
                             onClick={handleBuy}
                             className="btn btn-primary"
+
                             style={{ width: "100%", padding: "1rem", fontSize: "1.2rem" }}
                         >
                             Buy Now

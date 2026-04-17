@@ -6,7 +6,7 @@ const { db } = require("../db");
 router.get("/", async (req, res) => {
     try {
         const sql = `
-            SELECT p.*, sc.centername, sc.address 
+            SELECT p.*, sc.centername, sc.address
             FROM parts p
             LEFT JOIN servicecenters sc ON p.centerid = sc.centerid
         `;
@@ -40,14 +40,12 @@ router.post("/buy", async (req, res) => {
     try {
         await db.query("START TRANSACTION");
 
-        // 1. Process Payment
         const [payResult] = await db.query(
             "INSERT INTO payment (paymentmode, paymentstatus) VALUES (?, 'Pending')",
             [paymentmode]
         );
         const paymentId = payResult.insertId;
 
-        // 2. Create Order
         await db.query(
             "INSERT INTO part_orders (partid, buyer_userid, centerid, orderdate, paymentid) VALUES (?, ?, ?, CURDATE(), ?)",
             [partid, buyer_userid, centerid, paymentId]
@@ -64,6 +62,7 @@ router.post("/buy", async (req, res) => {
 });
 
 // GET MY PART ORDERS (Buyer & Service Center)
+// Must be defined before GET /:id to prevent "my-orders" matching as an id
 router.get("/my-orders/:userId", async (req, res) => {
     const { userId } = req.params;
     const { role } = req.query;
@@ -71,7 +70,7 @@ router.get("/my-orders/:userId", async (req, res) => {
     let sql = "";
     let params = [userId];
 
-    if (role === 'service_center') {
+    if (role === "service_center") {
         sql = `
             SELECT po.*, p.partname, p.partnumber, p.partprice, u.username as buyername, py.paymentstatus
             FROM part_orders po
@@ -86,9 +85,10 @@ router.get("/my-orders/:userId", async (req, res) => {
             SELECT po.*, p.partname, p.partnumber, p.partprice, sc.centername, py.paymentstatus
             FROM part_orders po
             JOIN parts p ON po.partid = p.partid
-            JOIN servicecenters sc ON po.centerid = sc.centerid
-            JOIN payment py ON po.paymentid = py.paymentid
+            LEFT JOIN servicecenters sc ON po.centerid = sc.centerid
+            LEFT JOIN payment py ON po.paymentid = py.paymentid
             WHERE po.buyer_userid = ?
+            ORDER BY po.orderdate DESC
         `;
     }
 
@@ -101,5 +101,22 @@ router.get("/my-orders/:userId", async (req, res) => {
     }
 });
 
-module.exports = router;
+// GET SINGLE PART — must be last to avoid swallowing named routes
+router.get("/:id", async (req, res) => {
+    try {
+        const sql = `
+            SELECT p.*, sc.centername, sc.address
+            FROM parts p
+            LEFT JOIN servicecenters sc ON p.centerid = sc.centerid
+            WHERE p.partid = ?
+        `;
+        const [rows] = await db.query(sql, [req.params.id]);
+        if (rows.length === 0) return res.status(404).json({ error: "Part not found" });
+        res.json(rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch part" });
+    }
+});
 
+module.exports = router;

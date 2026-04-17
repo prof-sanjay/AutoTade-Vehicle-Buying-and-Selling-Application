@@ -19,7 +19,20 @@ async function initDB() {
         const sql = fs.readFileSync(sqlPath, "utf8");
 
         console.log("Executing SQL script...");
-        await connection.query(sql);
+        
+        if (sql.includes('DELIMITER //')) {
+            const parts = sql.split('DELIMITER //');
+            await connection.query(parts[0]);
+            
+            const routines = parts[1].split('DELIMITER ;')[0].split('//').filter(s => s.trim() !== '');
+            for (let routine of routines) {
+                if (routine.trim()) {
+                    await connection.query(routine);
+                }
+            }
+        } else {
+            await connection.query(sql);
+        }
 
         console.log("Database initialized successfully!");
         await connection.end();

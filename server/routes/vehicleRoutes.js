@@ -1,15 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { db } = require("../db");
-const multer = require("multer");
-const path = require("path");
-
-// Configure Multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "uploads/"),
-    filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname)
-});
-const upload = multer({ storage });
+const { upload } = require("../config/cloudinary");
 
 // ADD VEHICLE (Seller)
 router.post("/add", upload.array("images", 8), async (req, res) => {
@@ -21,7 +13,7 @@ router.post("/add", upload.array("images", 8), async (req, res) => {
 
     try {
         // 1. Insert Vehicle
-        const sql = `INSERT INTO vehicle 
+        const sql = `INSERT INTO vehicles 
       (seller_userid, model, vehicleregistration, dateofmanufacture, kmdriven, engine, fueltype, transmission, color, mileage, locationid, price, status) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'available')`;
 
@@ -33,9 +25,9 @@ router.post("/add", upload.array("images", 8), async (req, res) => {
 
         const vehicleId = result.insertId;
 
-        // 2. Insert Images
+        // 2. Insert Images (Cloudinary returns full URL in file.path)
         if (req.files && req.files.length > 0) {
-            const imageValues = req.files.map(file => [vehicleId, "/uploads/" + file.filename]);
+            const imageValues = req.files.map(file => [vehicleId, file.path]);
             await db.query("INSERT INTO vehicleimage (VehicleID, ImagePath) VALUES ?", [imageValues]);
         }
 
@@ -54,7 +46,7 @@ router.get("/", async (req, res) => {
         const { featured } = req.query;
         let sql = `
       SELECT v.*, i.ImagePath as previewImage 
-      FROM vehicle v 
+      FROM vehicles v 
       LEFT JOIN (
          SELECT VehicleID, MIN(ImagePath) as ImagePath 
          FROM vehicleimage 
@@ -81,7 +73,7 @@ router.get("/:id", async (req, res) => {
             SELECT v.*, 
                    f.fc_id, f.issuedate, f.expirydate, f.status as fc_status,
                    u.name as sellername, u.phonenumber as sellerphone, u.email as selleremail
-            FROM vehicle v
+            FROM vehicles v
             LEFT JOIN fitnesscertificate f ON v.vehicleid = f.vehicleid
             LEFT JOIN user u ON v.seller_userid = u.userid
             WHERE v.vehicleid = ?
@@ -104,7 +96,7 @@ router.get("/my-vehicles/:sellerId", async (req, res) => {
         const { sellerId } = req.params;
         const sql = `
             SELECT v.*, i.ImagePath as previewImage 
-            FROM vehicle v 
+            FROM vehicles v 
             LEFT JOIN (
                 SELECT VehicleID, MIN(ImagePath) as ImagePath 
                 FROM vehicleimage 

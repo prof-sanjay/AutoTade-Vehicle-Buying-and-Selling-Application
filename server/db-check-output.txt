@@ -21,16 +21,19 @@ Tables in autotrade_db:
     "Tables_in_autotrade_db": "payment"
   },
   {
-    "Tables_in_autotrade_db": "service"
+    "Tables_in_autotrade_db": "service_bookings"
   },
   {
     "Tables_in_autotrade_db": "servicecenters"
   },
   {
-    "Tables_in_autotrade_db": "servicetypes"
+    "Tables_in_autotrade_db": "services"
   },
   {
     "Tables_in_autotrade_db": "user"
+  },
+  {
+    "Tables_in_autotrade_db": "vehicle"
   },
   {
     "Tables_in_autotrade_db": "vehicleimage"
@@ -40,7 +43,7 @@ Tables in autotrade_db:
   }
 ]
 
-Vehicles table structure:
+Vehicle table structure:
 [
   {
     "Field": "vehicleid",
@@ -51,16 +54,24 @@ Vehicles table structure:
     "Extra": "auto_increment"
   },
   {
-    "Field": "userid",
+    "Field": "seller_userid",
     "Type": "int",
-    "Null": "NO",
+    "Null": "YES",
     "Key": "MUL",
     "Default": null,
     "Extra": ""
   },
   {
+    "Field": "make",
+    "Type": "varchar(50)",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
     "Field": "model",
-    "Type": "varchar(100)",
+    "Type": "varchar(50)",
     "Null": "YES",
     "Key": "",
     "Default": null,
@@ -70,13 +81,21 @@ Vehicles table structure:
     "Field": "vehicleregistration",
     "Type": "varchar(50)",
     "Null": "YES",
-    "Key": "UNI",
+    "Key": "",
     "Default": null,
     "Extra": ""
   },
   {
     "Field": "dateofmanufacture",
     "Type": "date",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "price",
+    "Type": "decimal(10,2)",
     "Null": "YES",
     "Key": "",
     "Default": null,
@@ -100,7 +119,7 @@ Vehicles table structure:
   },
   {
     "Field": "fueltype",
-    "Type": "varchar(20)",
+    "Type": "varchar(30)",
     "Null": "YES",
     "Key": "",
     "Default": null,
@@ -108,7 +127,7 @@ Vehicles table structure:
   },
   {
     "Field": "transmission",
-    "Type": "varchar(20)",
+    "Type": "varchar(30)",
     "Null": "YES",
     "Key": "",
     "Default": null,
@@ -124,10 +143,26 @@ Vehicles table structure:
   },
   {
     "Field": "mileage",
-    "Type": "varchar(20)",
+    "Type": "int",
     "Null": "YES",
     "Key": "",
     "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "description",
+    "Type": "text",
+    "Null": "YES",
+    "Key": "",
+    "Default": null,
+    "Extra": ""
+  },
+  {
+    "Field": "status",
+    "Type": "enum('available','sold','pending')",
+    "Null": "YES",
+    "Key": "",
+    "Default": "available",
     "Extra": ""
   },
   {
@@ -139,60 +174,17 @@ Vehicles table structure:
     "Extra": ""
   },
   {
-    "Field": "price",
-    "Type": "decimal(10,2)",
+    "Field": "created_at",
+    "Type": "timestamp",
     "Null": "YES",
     "Key": "",
-    "Default": null,
-    "Extra": ""
-  },
-  {
-    "Field": "status",
-    "Type": "varchar(20)",
-    "Null": "YES",
-    "Key": "",
-    "Default": "Available",
-    "Extra": ""
-  },
-  {
-    "Field": "featured",
-    "Type": "tinyint(1)",
-    "Null": "YES",
-    "Key": "",
-    "Default": "0",
-    "Extra": ""
-  },
-  {
-    "Field": "previewImage",
-    "Type": "varchar(255)",
-    "Null": "YES",
-    "Key": "",
-    "Default": null,
-    "Extra": ""
+    "Default": "CURRENT_TIMESTAMP",
+    "Extra": "DEFAULT_GENERATED"
   }
 ]
 
 Sample vehicle data:
-[
-  {
-    "vehicleid": 1,
-    "userid": 2,
-    "model": "Hyundai i20",
-    "vehicleregistration": "KA01AA1111",
-    "dateofmanufacture": "2019-05-09T18:30:00.000Z",
-    "kmdriven": 35000,
-    "engine": "1.2 Litre",
-    "fueltype": "Petrol",
-    "transmission": "Manual",
-    "color": "White",
-    "mileage": "18 kmpl",
-    "locationid": 1,
-    "price": "650000.00",
-    "status": "Available",
-    "featured": 0,
-    "previewImage": null
-  }
-]
+[]
 
 User table structure:
 [
@@ -222,8 +214,8 @@ User table structure:
   },
   {
     "Field": "role",
-    "Type": "enum('user','admin','service_center')",
-    "Null": "NO",
+    "Type": "enum('user','service_center','admin')",
+    "Null": "YES",
     "Key": "",
     "Default": "user",
     "Extra": ""
@@ -285,7 +277,7 @@ Sample user data:
     "username": "arjun",
     "role": "user",
     "name": "Arjun Krishnan",
-    "email": "arjun@example.com",
+    "email": "arjun@gmail.com",
     "phonenumber": "9876543210"
   }
 ]

@@ -10,7 +10,7 @@ async function unifyUsers() {
             "ADD COLUMN phonenumber VARCHAR(20)",
             "ADD COLUMN address TEXT",
             "ADD COLUMN locationid INT",
-            "ADD COLUMN name VARCHAR(255)" // For full name
+            "ADD COLUMN name VARCHAR(255)" 
         ];
 
         for (const col of columnsToAdd) {

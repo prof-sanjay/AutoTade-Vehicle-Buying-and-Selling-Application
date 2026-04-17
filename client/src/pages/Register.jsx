@@ -14,6 +14,8 @@ export default function Register() {
         e.preventDefault();
         // Default role is 'user' handled by backend if omitted, or we can send it.
         // We'll send role: 'user' just to be explicit if needed, or rely on backend default.
+        
+        
         const payload = { ...formData, role: 'user' };
 
         fetch("http://localhost:5000/api/auth/register", {
@@ -29,10 +31,12 @@ export default function Register() {
                 } else {
                     alert(data.error || "Failed");
                 }
+
             });
     }
 
     return (
+
         <div className="container" style={{ marginTop: "50px", maxWidth: "600px" }}>
             <div className="card" style={{ padding: "2rem" }}>
                 <h2 style={{ textAlign: "center" }}>Create Account</h2>
@@ -42,10 +46,13 @@ export default function Register() {
                         <label>Username</label>
                         <input name="username" onChange={handleChange} required />
                     </div>
+
                     <div className="form-group">
                         <label>Password</label>
                         <input name="password" type="password" onChange={handleChange} required />
+
                     </div>
+
 
                     <div className="form-group"><label>Full Name</label><input name="name" onChange={handleChange} required /></div>
                     <div className="form-group"><label>Email</label><input name="email" type="email" onChange={handleChange} /></div>

@@ -1,12 +1,13 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LogOut, Car } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./Navbar.css";
 
 export default function Navbar() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
     const navigate = useNavigate();
     const location = useLocation();
+
     if (location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/") {
         return null;
     }
@@ -17,6 +18,8 @@ export default function Navbar() {
         navigate("/login");
     }
 
+    const isServiceCenter = user && (user.role === "servicecenter" || user.role === "service_center");
+
     return (
         <nav className="navbar">
             <div className="container nav-container">
@@ -25,12 +28,9 @@ export default function Navbar() {
                 </Link>
 
                 <div className="nav-links">
-                    {user && (user.role === "servicecenter" || user.role === "service_center") ? (
+                    {isServiceCenter ? (
                         <>
-                            {/* <Link to="/service-dashboard">Service Dashboard</Link>
-                            <Link to="/service-dashboard?tab=services">Service List</Link>
-                            <Link to="/service-dashboard?tab=history">Service History</Link>
-                            <Link to="/service-dashboard?tab=parts">Sell Autoparts</Link> */}
+                            <Link to="/service-dashboard">Service Dashboard</Link>
                             <Link to="/profile">Hello, {user.username}</Link>
                             <button onClick={logout} className="btn-icon">
                                 <LogOut size={20} />
@@ -39,15 +39,13 @@ export default function Navbar() {
                     ) : (
                         <>
                             <Link to="/home">Home</Link>
-                            <Link to="/vehicles">Browse Cars</Link>
-                            {/* <Link to="/parts">Auto Parts</Link> */}
-                            {/* <Link to="/services">Service Centers</Link> */}
+                            <Link to="/vehicles">Vehicles</Link>
+                            <Link to="/parts">AutoParts</Link>
+                            <Link to="/orders">Sale & Orders</Link>
+                            <Link to="/add-vehicle" className="btn btn-primary">Sell Car</Link>
 
                             {user ? (
                                 <>
-                                    {/* <Link to="/seller-dashboard">Dashboard</Link> */}
-                                    <Link to="/orders">My Orders</Link>
-                                    <Link to="/add-vehicle" className="btn btn-primary">Sell Car</Link>
                                     <Link to="/profile">Hello, {user.username}</Link>
                                     <button onClick={logout} className="btn-icon">
                                         <LogOut size={20} />

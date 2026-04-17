@@ -30,9 +30,9 @@ export default function Verification() {
     const handleNotifySeller = async () => {
         try {
             const payload = {
-                itemId: item.vehicleid,        // 🔥 THIS is itemId
-                buyerId: user.id,  // 🔥 buyer.userid
-                sellerId: item.seller_userid,       // 🔥 vehicles.sellerid
+                itemId: item.vehicleid,        
+                buyerId: user.id,  
+                sellerId: item.seller_userid,       
                 amount: item.price
             };
 

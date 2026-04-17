@@ -2,6 +2,12 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../index.css";
 
+const API = "http://localhost:5000";
+function imgUrl(path) {
+    if (!path) return null;
+    return path.startsWith("http") ? path : API + path;
+}
+
 export default function Home() {
     const [featuredCars, setFeaturedCars] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -22,12 +28,14 @@ export default function Home() {
     return (
         <div>
             {/* HERO SECTION */}
+            
             <div className="hero">
                 <div className="hero-content">
                     <h1>Find Your Dream Car</h1>
                     <p>Best collection of luxury and sports cars</p>
                     <Link to="/vehicles" className="btn btn-primary">Browse All Cars</Link>
                 </div>
+
             </div>
 
             <div className="container" style={{ margin: "4rem auto" }}>
@@ -39,6 +47,7 @@ export default function Home() {
                         paddingLeft: "10px",
                     }}
                 >
+
                     Featured Vehicles
                 </h2>
 
@@ -47,11 +56,11 @@ export default function Home() {
                         {featuredCars.length > 0 ? (
                             featuredCars.map(car => (
                                 <Link to={`/vehicle/${car.vehicleid}`} className="card" key={car.vehicleid}>
-                                    <div
-                                        style={{
-                                            height: "200px",
-                                            background: car.previewImage ? `url(http://localhost:5000${car.previewImage}) center/cover` : "#ddd"
-                                        }}
+                                    <img
+                                        src={imgUrl(car.previewImage) || "/default-car.png"}
+                                        alt={car.model}
+                                        style={{ width: "100%", height: "200px", objectFit: "cover" }}
+                                        onError={e => { e.target.src = "/default-car.png"; }}
                                     />
                                     <div style={{ padding: "1rem" }}>
                                         <h3>{car.model}</h3>
@@ -70,6 +79,7 @@ export default function Home() {
                     </div>
                 )}
             </div>
+
         </div>
     );
 }

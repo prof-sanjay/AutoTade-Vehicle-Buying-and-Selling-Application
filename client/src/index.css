@@ -1,61 +1,78 @@
 :root {
   --primary: #D32F2F;
   /* Premium Red */
+  
   --primary-hover: #b71c1c;
-  --secondary: #212121;
   /* Dark Grey */
+  --secondary: #212121;
+  
   --background: #f5f5f5;
   --surface: #ffffff;
   --text-main: #212121;
   --text-light: #757575;
   --white: #ffffff;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
   --radius: 8px;
 }
 
 * {
+
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 body {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--background);
   color: var(--text-main);
   line-height: 1.6;
+
+/* Utilities */
 }
 
 a {
   text-decoration: none;
   color: inherit;
+
 }
 
-/* Utilities */
+
 .container {
   max-width: 1370px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
+
 .btn {
   display: inline-block;
   padding: 10px 20px;
   border-radius: var(--radius);
+
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+
   border: none;
 }
 
 .btn-primary {
   background-color: var(--primary);
+
   color: var(--white);
 }
 
 .btn-primary:hover {
+
+/* Forms */
   background-color: var(--primary-hover);
 }
+
 
 .btn-outline {
   border: 2px solid var(--primary);
@@ -68,7 +85,7 @@ a {
   color: var(--white);
 }
 
-/* Forms */
+
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -79,11 +96,13 @@ label {
   font-weight: 500;
 }
 
+/* Grid */
 input,
 select,
 textarea {
   width: 100%;
   padding: 12px;
+
   border: 1px solid #ddd;
   border-radius: var(--radius);
   font-size: 1rem;
@@ -91,11 +110,13 @@ textarea {
 
 input:focus,
 select:focus {
+
   outline: 2px solid var(--primary);
   border-color: transparent;
 }
 
-/* Grid */
+/* Hero Section */
+
 .grid-3 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -106,15 +127,17 @@ select:focus {
   background: var(--surface);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+
   overflow: hidden;
   transition: transform 0.2s;
 }
 
 .card:hover {
+
   transform: translateY(-5px);
 }
 
-/* Hero Section */
+
 .hero {
   height: 80vh;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1503376763036-066120622c74?q=80&w=2070&auto=format&fit=crop');

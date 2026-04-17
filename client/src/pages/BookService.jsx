@@ -9,7 +9,9 @@ export default function BookService() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     // Pre-fill from URL if available
+    
     const centerIdParam = searchParams.get("centerid");
+
     const centerNameParam = searchParams.get("name");
 
     const [formData, setFormData] = useState({
@@ -17,17 +19,21 @@ export default function BookService() {
         vehiclename: "",
         registration: "",
         kmdriven: "",
+
         fueltype: "Petrol"
     });
 
     useEffect(() => {
         if (!user) {
             navigate("/login");
+
             return;
         }
+
     }, [user, navigate]);
 
     async function handleSubmit(e) {
+
         e.preventDefault();
 
         const confirmBooking = window.confirm(
@@ -36,6 +42,8 @@ export default function BookService() {
 
         if (!confirmBooking) return;
 
+
+            // Create a booking object with the required fields
         try {
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user) {
@@ -43,19 +51,23 @@ export default function BookService() {
                 return;
             }
 
-            // Create a booking object with the required fields
+            
+
             const bookingData = {
                 centerid: formData.centerid,
-                vehicleid: 1, // You'll need to implement proper vehicle selection
-                servicetypeid: 1, // Default service type, update as needed
-                servicedate: new Date().toISOString().split('T')[0], // Today's date
-                servicetime: '10:00 AM', // Default time
-                paymentmode: 'Cash' // Default payment mode
+                vehicleid: 1, 
+                servicetypeid: 1, 
+                servicedate: new Date().toISOString().split('T')[0], 
+                servicetime: '10:00 AM', 
+                paymentmode: 'Cash' 
+
             };
 
             const response = await fetch('http://localhost:5000/api/services/book', {
+
                 method: 'POST',
                 headers: {
+
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(bookingData)
@@ -63,10 +75,12 @@ export default function BookService() {
 
             if (!response.ok) {
                 throw new Error('Failed to book service');
+
             }
 
             const result = await response.json();
             console.log('Booking successful:', result);
+
 
             alert("✅ Service Booked Successfully!");
             navigate("/my-bookings");
@@ -79,6 +93,7 @@ export default function BookService() {
     return (
         <div className="container" style={{ marginTop: "30px", maxWidth: "600px" }}>
             <div className="card" style={{ padding: "2rem" }}>
+
                 <h2 style={{ textAlign: "center", marginBottom: "2rem" }}>Book Service</h2>
                 {centerNameParam && <p style={{ textAlign: "center", marginBottom: "1rem" }}>at <strong>{centerNameParam}</strong></p>}
 
@@ -90,6 +105,7 @@ export default function BookService() {
                             required
                             placeholder="Enter vehicle model and year (e.g., Maruti Swift 2020)"
                             value={formData.vehiclename}
+
                             onChange={e => setFormData({ ...formData, vehiclename: e.target.value })}
                         />
                     </div>
@@ -101,6 +117,7 @@ export default function BookService() {
                             required
                             placeholder="Enter vehicle registration number"
                             value={formData.registration}
+
                             onChange={e => setFormData({ ...formData, registration: e.target.value })}
                             style={{ textTransform: 'uppercase' }}
                         />
@@ -114,6 +131,7 @@ export default function BookService() {
                             min="0"
                             placeholder="Enter kilometers driven"
                             value={formData.kmdriven}
+
                             onChange={e => setFormData({ ...formData, kmdriven: e.target.value })}
                         />
                     </div>
@@ -122,6 +140,7 @@ export default function BookService() {
                         <label>Fuel Type</label>
                         <select
                             value={formData.fueltype}
+
                             onChange={e => setFormData({ ...formData, fueltype: e.target.value })}
                         >
                             <option value="Petrol">Petrol</option>

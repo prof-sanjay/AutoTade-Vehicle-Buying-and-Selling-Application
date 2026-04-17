@@ -43,12 +43,11 @@ CREATE TABLE IF NOT EXISTS servicecenters (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Vehicle Table
-CREATE TABLE IF NOT EXISTS vehicle (
+CREATE TABLE IF NOT EXISTS vehicles (
     vehicleid INT NOT NULL AUTO_INCREMENT,
     seller_userid INT,
-    make VARCHAR(50),
-    model VARCHAR(50),
-    vehicleregistration VARCHAR(50),
+    model VARCHAR(100),
+    vehicleregistration VARCHAR(50) UNIQUE,
     dateofmanufacture DATE,
     price DECIMAL(10,2),
     kmdriven INT,
@@ -56,14 +55,25 @@ CREATE TABLE IF NOT EXISTS vehicle (
     fueltype VARCHAR(30),
     transmission VARCHAR(30),
     color VARCHAR(30),
-    mileage INT,
+    mileage VARCHAR(30),
     description TEXT,
-    status ENUM('available','sold','pending') DEFAULT 'available',
+    status VARCHAR(30) DEFAULT 'Available',
     locationid INT,
+    featured BOOLEAN DEFAULT FALSE,
+    previewImage VARCHAR(255),
+    age INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (vehicleid),
     FOREIGN KEY (seller_userid) REFERENCES user(userid),
     FOREIGN KEY (locationid) REFERENCES location(locationid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Vehicle Images Table
+CREATE TABLE IF NOT EXISTS vehicleimage (
+    ImageID INT AUTO_INCREMENT PRIMARY KEY,
+    VehicleID INT,
+    ImagePath VARCHAR(255),
+    FOREIGN KEY (VehicleID) REFERENCES vehicles(vehicleid) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Parts Table
@@ -83,9 +93,9 @@ CREATE TABLE IF NOT EXISTS parts (
 CREATE TABLE IF NOT EXISTS payment (
     paymentid INT NOT NULL AUTO_INCREMENT,
     amount DECIMAL(10,2),
-    paymentdate DATE,
-    paymentmethod ENUM('cash','card','upi','bank_transfer') DEFAULT 'cash',
-    status ENUM('pending','completed','failed') DEFAULT 'pending',
+    paymentdate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    paymentmode VARCHAR(50) DEFAULT 'Cash',
+    paymentstatus VARCHAR(50) DEFAULT 'Pending',
     PRIMARY KEY (paymentid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -96,10 +106,11 @@ CREATE TABLE IF NOT EXISTS orders (
     buyer_userid INT,
     seller_userid INT,
     orderdate DATE,
+    ordertime TIME,
     paymentid INT,
-    status ENUM('pending','confirmed','completed','cancelled') DEFAULT 'pending',
+    status ENUM('pending','confirmed','completed','cancelled','Notified') DEFAULT 'pending',
     PRIMARY KEY (orderid),
-    FOREIGN KEY (vehicleid) REFERENCES vehicle(vehicleid),
+    FOREIGN KEY (vehicleid) REFERENCES vehicles(vehicleid),
     FOREIGN KEY (buyer_userid) REFERENCES user(userid),
     FOREIGN KEY (seller_userid) REFERENCES user(userid),
     FOREIGN KEY (paymentid) REFERENCES payment(paymentid)
@@ -121,7 +132,7 @@ CREATE TABLE IF NOT EXISTS part_orders (
     FOREIGN KEY (paymentid) REFERENCES payment(paymentid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Services Table
+-- Services Table (Definitions)
 CREATE TABLE IF NOT EXISTS services (
     serviceid INT NOT NULL AUTO_INCREMENT,
     servicename VARCHAR(100),
@@ -131,10 +142,10 @@ CREATE TABLE IF NOT EXISTS services (
     duration_minutes INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (serviceid),
-    FOREIGN KEY (centerid) REFERENCES servicecenters(centerid)
+    FOREIGN KEY (centerid) REFERENCES servicecenters(centerid) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Service Bookings Table
+-- Service Bookings Table (Actual Bookings)
 CREATE TABLE IF NOT EXISTS service_bookings (
     bookingid INT NOT NULL AUTO_INCREMENT,
     serviceid INT,
@@ -142,7 +153,8 @@ CREATE TABLE IF NOT EXISTS service_bookings (
     centerid INT,
     bookingdate DATE,
     bookingtime TIME,
-    status ENUM('pending','confirmed','completed','cancelled') DEFAULT 'pending',
+    status VARCHAR(50) DEFAULT 'Pending',
+    paymentid INT,
     vehicleid INT,
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -150,7 +162,8 @@ CREATE TABLE IF NOT EXISTS service_bookings (
     FOREIGN KEY (serviceid) REFERENCES services(serviceid),
     FOREIGN KEY (userid) REFERENCES user(userid),
     FOREIGN KEY (centerid) REFERENCES servicecenters(centerid),
-    FOREIGN KEY (vehicleid) REFERENCES vehicle(vehicleid)
+    FOREIGN KEY (vehicleid) REFERENCES vehicles(vehicleid),
+    FOREIGN KEY (paymentid) REFERENCES payment(paymentid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Insert some default locations
@@ -161,3 +174,131 @@ INSERT INTO location (city, state, country) VALUES
 ('Chennai', 'Tamil Nadu', 'India'),
 ('Kolkata', 'West Bengal', 'India')
 ON DUPLICATE KEY UPDATE city=city;
+
+select * from location;
+
+USE autotrade_db;
+
+
+
+-- DROP PROCEDURE IF EXISTS place_order;
+
+-- CREATE PROCEDURE place_order(
+--     IN p_vehicleid INT,
+--     IN p_buyerid INT,
+--     IN p_sellerid INT
+-- )
+-- BEGIN
+--     DECLARE EXIT HANDLER FOR SQLEXCEPTION
+--     BEGIN
+--         ROLLBACK;
+--         SELECT 'Error occurred while placing order' AS message;
+--     END;
+
+--     START TRANSACTION;
+
+--     INSERT INTO orders (
+--         vehicleid, 
+--         buyer_userid, 
+--         seller_userid, 
+--         orderdate, 
+--         ordertime
+--     ) VALUES (
+--         p_vehicleid, 
+--         p_buyerid, 
+--         p_sellerid, 
+--         CURDATE(),
+--         CURTIME()
+--     );
+
+--     COMMIT;
+-- END //
+
+
+DROP PROCEDURE IF EXISTS get_vehicles_by_price;
+
+CREATE PROCEDURE get_vehicles_by_price(
+    IN min_price DECIMAL(10,2),
+    IN max_price DECIMAL(10,2)
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SELECT 'Error fetching vehicles' AS message;
+    END;
+
+    IF min_price > max_price THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid price range';
+    END IF;
+
+    SELECT * FROM vehicles
+    WHERE price BETWEEN min_price AND max_price;
+END
+
+
+
+
+--  Before Vehicle Insert → Validate Price + Timestamp + Calculate Age
+DROP TRIGGER IF EXISTS before_vehicle_insert;
+DROP TRIGGER IF EXISTS before_vehicle_insert_age;
+
+CREATE TRIGGER before_vehicle_insert
+BEFORE INSERT ON vehicles
+FOR EACH ROW
+BEGIN
+    -- Set created timestamp
+    SET NEW.created_at = NOW();
+
+    -- Validate price
+    IF NEW.price <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Price must be greater than 0';
+    END IF;
+
+    -- Validate manufacturing date
+    IF NEW.dateofmanufacture > CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid manufacturing date';
+    END IF;
+
+    -- Calculate vehicle age
+    IF NEW.dateofmanufacture IS NOT NULL THEN
+        SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.dateofmanufacture, CURDATE());
+    END IF;
+END
+
+
+--  Before Vehicle Update → Update Age
+DROP TRIGGER IF EXISTS before_vehicle_update;
+
+CREATE TRIGGER before_vehicle_update
+BEFORE UPDATE ON vehicles
+FOR EACH ROW
+BEGIN
+    IF NEW.dateofmanufacture IS NOT NULL THEN
+        SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.dateofmanufacture, CURDATE());
+    END IF;
+END
+
+
+
+-- Prevent Duplicate Sale
+DROP TRIGGER IF EXISTS prevent_duplicate_sale;
+
+CREATE TRIGGER prevent_duplicate_sale
+BEFORE INSERT ON orders
+FOR EACH ROW
+BEGIN
+    DECLARE v_status VARCHAR(20);
+
+    SELECT status INTO v_status
+    FROM vehicles
+    WHERE vehicleid = NEW.vehicleid;
+
+    IF v_status = 'Sold' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Vehicle already sold';
+    END IF;
+END //
+

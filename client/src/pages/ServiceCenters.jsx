@@ -23,16 +23,20 @@ export default function ServiceCenters() {
             } catch (err) {
                 console.error("Failed to fetch centers:", err);
                 // You can add a user-friendly error message here
+                
             } finally {
                 setLoading(false);
             }
+
         };
+
 
         fetchCenters();
     }, []);
 
     return (
         <div className="container" style={{ marginTop: "30px" }}>
+
             <h2 style={{ marginBottom: "2rem", borderLeft: "5px solid var(--primary)", paddingLeft: "10px" }}>
                 Authorized Service Centers
             </h2>
@@ -73,6 +77,7 @@ export default function ServiceCenters() {
                         </div>
                     ))}
                 </div>
+
             )}
         </div>
     );

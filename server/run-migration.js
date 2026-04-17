@@ -15,26 +15,26 @@ async function runMigrations() {
 
     try {
         console.log('Starting database migrations...');
-        
+
         // Get all migration files in order
         const migrationsDir = path.join(__dirname, 'migrations');
         const files = (await fs.readdir(migrationsDir))
             .filter(file => file.endsWith('.sql'))
             .sort();
-        
-        console.log(`Found ${files.length} migration files`);
-        
+
+                console.log(`Found ${files.length} migration files`);
+
         // Run each migration file
         for (const file of files) {
             console.log(`\nRunning migration: ${file}`);
             const filePath = path.join(migrationsDir, file);
             const sql = await fs.readFile(filePath, 'utf8');
-            
-            const statements = sql.split(';')
+
+                        const statements = sql.split(';')
                 .map(s => s.trim())
                 .filter(s => s.length > 0);
-            
-            for (const statement of statements) {
+
+                        for (const statement of statements) {
                 try {
                     console.log(`  Executing: ${statement.substring(0, 60)}...`);
                     await connection.query(statement);
@@ -47,11 +47,11 @@ async function runMigrations() {
                     throw error;
                 }
             }
-            
-            console.log(`✅ ${file} completed successfully`);
+
+                        console.log(`✅ ${file} completed successfully`);
         }
-        
-        console.log('\n✅ All migrations completed successfully');
+
+                console.log('\n✅ All migrations completed successfully');
     } catch (error) {
         console.error('❌ Migration failed:', error);
         process.exit(1);

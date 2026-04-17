@@ -67,7 +67,7 @@ router.get("/my-orders/:userId", async (req, res) => {
             SELECT o.*, o.status as order_status, v.model, v.price, v.vehicleregistration, 
                    s.name as sellername, s.phonenumber as sellerphone
             FROM orders o
-            LEFT JOIN vehicle v ON o.vehicleid = v.vehicleid
+            LEFT JOIN vehicles v ON o.vehicleid = v.vehicleid
             LEFT JOIN user s ON o.seller_userid = s.userid
             WHERE o.buyer_userid = ?
             ORDER BY o.orderdate DESC, o.ordertime DESC
@@ -79,7 +79,7 @@ router.get("/my-orders/:userId", async (req, res) => {
             SELECT o.*, o.status as order_status, v.model, v.price, v.vehicleregistration, 
                    b.name as buyername, b.phonenumber as buyerphone
             FROM orders o
-            LEFT JOIN vehicle v ON o.vehicleid = v.vehicleid
+            LEFT JOIN vehicles v ON o.vehicleid = v.vehicleid
             LEFT JOIN user b ON o.buyer_userid = b.userid
             WHERE o.seller_userid = ?
             ORDER BY o.orderdate DESC, o.ordertime DESC
@@ -89,10 +89,10 @@ router.get("/my-orders/:userId", async (req, res) => {
 
         if (role === "buyer") {
             const [orders] = await db.query(purchasesSql, [userId]);
-            result = orders; // Return array directly for backward compatibility
+            result = orders; 
         } else if (role === "seller") {
             const [orders] = await db.query(salesSql, [userId]);
-            result = orders; // Return array directly
+            result = orders; 
         } else {
             // Unified User: Return both
             const [purchases] = await db.query(purchasesSql, [userId]);

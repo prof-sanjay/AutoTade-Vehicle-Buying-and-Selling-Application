@@ -22,18 +22,23 @@ export default function Services() {
         }
 
         // Fetch user's vehicles
+        
         fetch(`http://localhost:5000/api/vehicles/user/${user.id}`)
             .then(res => res.json())
-            .then(data => setVehicles(data));
 
         // Fetch service centers
+            .then(data => setVehicles(data));
+
+        
         fetch("http://localhost:5000/api/servicecenters")
+
             .then(res => res.json())
             .then(data => setCenters(data));
     }, [user, navigate]);
 
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });
+
     }
 
     function handleSubmit(e) {
@@ -52,10 +57,13 @@ export default function Services() {
                 if (data.success) {
                     alert("Service booked successfully!");
                     navigate("/my-bookings");
+
                 } else {
                     alert("Failed to book service");
                 }
+
             });
+
     }
 
     return (
@@ -67,6 +75,7 @@ export default function Services() {
                 <div className="form-group">
                     <label>Select Vehicle</label>
                     <select name="vehicleid" required onChange={handleChange}>
+
                         <option value="">-- Select Vehicle --</option>
                         {vehicles.map(v => (
                             <option key={v.vehicleid} value={v.vehicleid}>
@@ -78,20 +87,24 @@ export default function Services() {
 
                 <div className="form-group">
                     <label>Select Service Center</label>
+
                     <select name="centerid" required onChange={handleChange}>
                         <option value="">-- Select Center --</option>
                         {centers.map(c => (
                             <option key={c.centerid} value={c.centerid}>
+
                                 {c.centername}
                             </option>
                         ))}
                     </select>
+
                 </div>
 
                 <div className="form-group">
                     <label>Service Date</label>
                     <input type="date" name="servicedate" required onChange={handleChange} />
                 </div>
+
 
                 <div className="form-group">
                     <label>Service Time</label>

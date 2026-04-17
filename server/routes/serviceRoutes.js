@@ -76,7 +76,7 @@ router.get("/bookings/:userId", async (req, res) => {
             WHERE sc.userid = ?
             ORDER BY s.servicedate DESC
         `;
-    } else { // Buyer
+    } else { 
         // Only show services for vehicles *this user* bought? 
         // Or if we assume the user passed in 'bookings/:userId' is the one who booked.
         // But we don't store 'userid' in service.

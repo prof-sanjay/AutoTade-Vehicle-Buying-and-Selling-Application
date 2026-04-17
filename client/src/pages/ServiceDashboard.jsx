@@ -85,18 +85,24 @@ export default function ServiceDashboard() {
     }
 
     // Filter Bookings
+    
     const activeBookings = bookings.filter(b => b.paymentstatus !== 'Completed');
+
     const historyBookings = bookings.filter(b => b.paymentstatus === 'Completed');
 
     return (
+
+
+
         <div className="container" style={{ marginTop: "30px" }}>
             <h2>Service Dashboard</h2>
+                    {/* TAB 1: ACTIVE BOOKINGS */}
 
 
 
             {loading ? <p>Loading dashboard data...</p> : (
                 <>
-                    {/* TAB 1: ACTIVE BOOKINGS */}
+                    
                     {activeTab === "bookings" && (
                         <div>
                             <h3>Incoming Service Bookings (Active)</h3>
@@ -137,7 +143,7 @@ export default function ServiceDashboard() {
                         </div>
                     )}
 
-                    {/* TAB 2: SERVICE LIST (TYPES) */}
+                    
                     {activeTab === "services" && (
                         <div>
                             <h3>Offered Services</h3>
@@ -152,6 +158,8 @@ export default function ServiceDashboard() {
                                 <tbody>
                                     {serviceTypes.map(s => (
                                         <tr key={s.servicetypeid} style={{ borderBottom: "1px solid #ddd" }}>
+
+                    {/* TAB 3: SERVICE HISTORY */}
                                             <td style={{ padding: "10px" }}>{s.servicename}</td>
                                             <td style={{ padding: "10px" }}>₹ {s.baseprice}</td>
                                         </tr>
@@ -161,7 +169,7 @@ export default function ServiceDashboard() {
                         </div>
                     )}
 
-                    {/* TAB 3: SERVICE HISTORY */}
+                    
                     {activeTab === "history" && (
                         <div>
                             <h3>Completed Service History</h3>
@@ -183,6 +191,8 @@ export default function ServiceDashboard() {
                                                 <td style={{ padding: "10px" }}>{b.model} ({b.vehicleregistration})</td>
                                                 <td style={{ padding: "10px" }}>{b.customer_name}</td>
                                                 <td style={{ padding: "10px" }}>{new Date(b.servicedate).toLocaleDateString()}</td>
+
+                    {/* TAB 4: PARTS MANAGEMENT */}
                                                 <td style={{ padding: "10px" }}>
                                                     <span style={{ color: "green", fontWeight: "bold" }}>Completed</span>
                                                 </td>
@@ -194,7 +204,7 @@ export default function ServiceDashboard() {
                         </div>
                     )}
 
-                    {/* TAB 4: PARTS MANAGEMENT */}
+                    
                     {activeTab === "parts" && (
                         <div>
                             <div style={{ background: "#f9f9f9", padding: "20px", marginBottom: "20px" }}>
@@ -213,6 +223,7 @@ export default function ServiceDashboard() {
                                         onChange={e => setNewPart({ ...newPart, partnumber: e.target.value })}
                                         required
                                         style={{ padding: "8px" }}
+
                                     />
                                     <input
                                         type="number"
@@ -243,6 +254,7 @@ export default function ServiceDashboard() {
                                             <td style={{ padding: "10px" }}>{p.partname}</td>
                                             <td style={{ padding: "10px" }}>{p.partnumber}</td>
                                             <td style={{ padding: "10px" }}>{p.buyername}</td>
+
                                             <td style={{ padding: "10px" }}>₹ {p.partprice}</td>
                                             <td style={{ padding: "10px" }}>{p.paymentstatus}</td>
                                         </tr>

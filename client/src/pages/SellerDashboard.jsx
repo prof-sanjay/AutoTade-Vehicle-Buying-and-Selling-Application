@@ -82,6 +82,7 @@ export default function SellerDashboard() {
                                                 View
                                             </Link>
                                             {/* Could add edit/delete buttons here */}
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -89,6 +90,7 @@ export default function SellerDashboard() {
                         </div>
                     ) : (
                         <p style={{ color: "#777", fontStyle: "italic" }}>No active listings found.</p>
+
                     )}
 
                     <h3 style={{ borderBottom: "2px solid #ddd", paddingBottom: "10px", marginBottom: "15px", marginTop: "40px" }}>Sold History</h3>
@@ -142,5 +144,6 @@ export default function SellerDashboard() {
                 </>
             )}
         </div>
+
     );
 }
